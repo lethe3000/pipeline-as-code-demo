@@ -4,8 +4,8 @@ jettyUrl = 'http://localhost:8081/'
 stage 'Dev'
 node ('docker-cloud'){
     checkout scm
-    mvn 'clean package'
-    dir('target') {stash name: 'war', includes: 'x.war'}
+//    mvn 'clean package'
+//    dir('target') {stash name: 'war', includes: 'x.war'}
 }
 
 stage 'QA'
@@ -29,40 +29,40 @@ try {
 
 stage name: 'Production', concurrency: 1
 node ('docker-cloud') {
-    sh "wget -O - -S ${jettyUrl}staging/"
+//    sh "wget -O - -S ${jettyUrl}staging/"
     echo 'Production server looks to be alive'
-    deploy 'production'
+//    deploy 'production'
     echo "Deployed to ${jettyUrl}production/"
 }
 
 def mvn(args) {
-    sh "${tool 'Maven 3.x'}/bin/mvn ${args}"
+//    sh "${tool 'Maven 3.x'}/bin/mvn ${args}"
 }
 
 def runTests(duration) {
     node ('docker-cloud')  {
         checkout scm
-        runWithServer {url ->
-            mvn "-o -f sometests test -Durl=${url} -Dduration=${duration}"
-        }
+//        runWithServer {url ->
+//            mvn "-o -f sometests test -Durl=${url} -Dduration=${duration}"
+//        }
     }
 }
 
 def deploy(id) {
-    unstash 'war'
-    sh "cp x.war /tmp/webapps/${id}.war"
+//    unstash 'war'
+//    sh "cp x.war /tmp/webapps/${id}.war"
 }
 
 def undeploy(id) {
-    sh "rm /tmp/webapps/${id}.war"
+/    sh "rm /tmp/webapps/${id}.war"
 }
 
 def runWithServer(body) {
-    def id = UUID.randomUUID().toString()
-    deploy id
-    try {
-        body.call "${jettyUrl}${id}/"
-    } finally {
-        undeploy id
-    }
+//    def id = UUID.randomUUID().toString()
+//    deploy id
+//    try {
+//        body.call "${jettyUrl}${id}/"
+//    } finally {
+//        undeploy id
+//    }
 }
